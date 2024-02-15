@@ -132,8 +132,8 @@ exporters:
     tls:
       insecure: true
     timeout: 20s
-    headers:
-      "signoz-access-token": "<SIGNOZ_INGESTION_KEY>"
+    # headers:
+    #   "signoz-access-token": "<SIGNOZ_INGESTION_KEY>"
   clickhousetraces:
     datasource: tcp://clickhouse:9000/?database=signoz_traces
     docker_multi_node_cluster: ${DOCKER_MULTI_NODE_CLUSTER}
@@ -179,6 +179,6 @@ service:
       processors: [batch]
       exporters: [clickhousemetricswrite/prometheus]
     logs:
-      receivers: [otlp, tcplog/docker]
+      receivers: [otlp, tcplog/docker, filelog]
       processors: [batch]
       exporters: [clickhouselogsexporter, logging]
