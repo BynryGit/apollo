@@ -1,4 +1,6 @@
 receivers:
+  fluentforward:
+    endpoint: 0.0.0.0:8006
   tcplog/docker:
     listen_address: "0.0.0.0:2255"
     operators:
@@ -179,6 +181,6 @@ service:
       processors: [batch]
       exporters: [clickhousemetricswrite/prometheus]
     logs:
-      receivers: [otlp, tcplog/docker, filelog]
+      receivers: [otlp, tcplog/docker, filelog, fluentforward ]
       processors: [batch]
       exporters: [clickhouselogsexporter, logging]
