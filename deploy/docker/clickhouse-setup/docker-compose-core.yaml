@@ -78,7 +78,7 @@ services:
       # clickhouse-3:
       #   condition: service_healthy
 
-  # Notes for Maintainers/Contributors who will change Line Numbers of Frontend & Query-Section. Please Update Line Numbers in `./scripts/commentLinesForSetup.sh` & `./CONTRIBUTING.md`
+      # Notes for Maintainers/Contributors who will change Line Numbers of Frontend & Query-Section. Please Update Line Numbers in `./scripts/commentLinesForSetup.sh` & `./CONTRIBUTING.md`
   otel-collector:
     container_name: signoz-otel-collector
     image: signoz/signoz-otel-collector:0.88.12
@@ -126,6 +126,16 @@ services:
     depends_on:
       - otel-collector
     restart: on-failure
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: always
+    ports:
+      - "3001:3001"
+    volumes:
+      - uptime-kuma:/app/data
+
 
   hotrod:
     image: jaegertracing/example-hotrod:1.30

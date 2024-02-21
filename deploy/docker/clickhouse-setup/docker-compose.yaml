@@ -278,6 +278,15 @@ services:
     depends_on:
       - otel-collector
     restart: on-failure
+  
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: always
+    ports:
+      - "3001:3001"
+    volumes:
+      - uptime-kuma:/app/data
 
   hotrod:
     image: jaegertracing/example-hotrod:1.30
