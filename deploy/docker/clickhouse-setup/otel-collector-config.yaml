@@ -1,4 +1,6 @@
 receivers:
+  fluentforward:
+    endpoint: 0.0.0.0:8006
   tcplog/docker:
     listen_address: "0.0.0.0:2255"
     operators:
@@ -24,6 +26,13 @@ receivers:
         endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:4318
+  httpcheck:
+    targets:
+      - endpoint: https://api-auth-staging.bynry.com/api/user/health/
+        method: GET
+        headers:
+          test-header: "test-value"
+    collection_interval: 10s
   jaeger:
     protocols:
       grpc:
@@ -120,6 +129,13 @@ extensions:
     endpoint: 0.0.0.0:1777
 
 exporters:
+  otlp:
+    endpoint: 0.0.0.0:4317
+    tls:
+      insecure: true
+    timeout: 20s
+    # headers:
+    #   "signoz-access-token": "<SIGNOZ_INGESTION_KEY>"
   clickhousetraces:
     datasource: tcp://clickhouse:9000/?database=signoz_traces
     docker_multi_node_cluster: ${DOCKER_MULTI_NODE_CLUSTER}
@@ -130,7 +146,9 @@ exporters:
       enabled: true
   clickhousemetricswrite/prometheus:
     endpoint: tcp://clickhouse:9000/?database=signoz_metrics
-  # logging: {}
+  logging:
+    loglevel: debug
+    verbosity: detailed
 
   clickhouselogsexporter:
     dsn: tcp://clickhouse:9000/
@@ -151,7 +169,7 @@ service:
       processors: [signozspanmetrics/cumulative, signozspanmetrics/delta, batch]
       exporters: [clickhousetraces]
     metrics:
-      receivers: [otlp]
+      receivers: [otlp, httpcheck]
       processors: [batch]
       exporters: [clickhousemetricswrite]
     metrics/generic:
@@ -163,6 +181,6 @@ service:
       processors: [batch]
       exporters: [clickhousemetricswrite/prometheus]
     logs:
-      receivers: [otlp, tcplog/docker]
+      receivers: [otlp, tcplog/docker, filelog, fluentforward ]
       processors: [batch]
-      exporters: [clickhouselogsexporter]
+      exporters: [clickhouselogsexporter, logging]
