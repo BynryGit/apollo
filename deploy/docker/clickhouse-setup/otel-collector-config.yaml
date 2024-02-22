@@ -130,7 +130,8 @@ exporters:
       enabled: true
   clickhousemetricswrite/prometheus:
     endpoint: tcp://clickhouse:9000/?database=signoz_metrics
-  # logging: {}
+  logging: 
+    loglevel: debug
 
   clickhouselogsexporter:
     dsn: tcp://clickhouse:9000/
@@ -165,4 +166,4 @@ service:
     logs:
       receivers: [otlp, tcplog/docker]
       processors: [batch]
-      exporters: [clickhouselogsexporter]
+      exporters: [logging]
