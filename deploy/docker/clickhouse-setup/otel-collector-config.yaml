@@ -18,6 +18,10 @@ receivers:
         expr: 'attributes.container_name matches "^signoz-(logspout|frontend|alertmanager|query-service|otel-collector|clickhouse|zookeeper)"'
   opencensus:
     endpoint: 0.0.0.0:55678
+
+  fluentforward:
+    endpoint: 0.0.0.0:24224
+
   otlp:
     protocols:
       grpc:
@@ -163,6 +167,6 @@ service:
       processors: [batch]
       exporters: [clickhousemetricswrite/prometheus]
     logs:
-      receivers: [otlp, tcplog/docker]
+      receivers: [otlp, fluentforward, tcplog/docker]
       processors: [batch]
       exporters: [clickhouselogsexporter]

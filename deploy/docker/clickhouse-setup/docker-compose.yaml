@@ -166,11 +166,7 @@ services:
   query-service:
     image: signoz/query-service:${DOCKER_TAG:-0.39.0}
     container_name: signoz-query-service
-    command:
-      [
-        "-config=/root/config/prometheus.yml",
-        # "--prefer-delta=true"
-      ]
+    command: [ "-config=/root/config/prometheus.yml" ] # "--prefer-delta=true"
     # ports:
     #   - "6060:6060"     # pprof port
     #   - "8080:8080"     # query-service port
@@ -249,6 +245,7 @@ services:
       - LOW_CARDINAL_EXCEPTION_GROUPING=false
     ports:
       # - "1777:1777"     # pprof extension
+      - "24224:24224" # port for fluentbit
       - "4317:4317" # OTLP gRPC receiver
       - "4318:4318" # OTLP HTTP receiver
       # - "8888:8888"     # OtelCollector internal metrics
