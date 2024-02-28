@@ -133,8 +133,6 @@ services:
     restart: always
     ports:
       - "3001:3001"
-    volumes:
-      - uptime-kuma:/app/data
 
 
   hotrod:
